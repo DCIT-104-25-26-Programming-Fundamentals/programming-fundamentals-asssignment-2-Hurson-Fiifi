@@ -33,21 +33,46 @@
 // =============================================================================
 // YOUR CODE BELOW — remove the // symbols from the scaffold and fill it in
 // =============================================================================
+#include <iostream>
 
-def prime_num(number):
-    if number < 2:
-        return False
-    for i in range(2,number):
-        if number % i == 0:
-            return False
-        return True
-def main():
-    number = int(input("Enter a number: "))
-    if prime_num(number):
-        print(f"{number} is a prime number.")
-    else:
-        print(f"{number} is NOT a prime number.")
+// Function prototype
+bool isPrime(int n);
 
+int main() {
+    int number;
 
-if __name__ == "__main__":
-    main()
+    // Prompt user for input
+    std::cout << "Enter a number: ";
+    std::cin >> number;
+
+    // Call isPrime() and display the result based on the output requirements
+    if (isPrime(number)) {
+        std::cout << number << " is a prime number." << std::endl;
+    } else {
+        std::cout << number << " is NOT a prime number." << std::endl;
+    }
+
+    return 0;
+}
+
+/**
+ * Checks whether a given integer is prime.
+ * 
+ * @param n The integer to check.
+ * @return true if n is prime, false otherwise.
+ */
+bool isPrime(int n) {
+    // Numbers less than 2 are NOT prime
+    if (n < 2) {
+        return false;
+    }
+
+    // Check for factors from 2 up to sqrt(n)
+    for (int i = 2; i * i <= n; ++i) {
+        if (n % i == 0) {
+            return false; // Found a factor, so n is not prime
+        }
+    }
+
+    return true; // No factors found, n is prime
+}
