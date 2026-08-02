@@ -81,5 +81,193 @@
 #include <vector>
 #include <string>
 #include <iomanip>
-using namespace std;
+
+// Struct definition
+struct Student {
+    std::string name;
+    int id;
+    std::vector<double> scores;
+};
+
+// Function Prototypes
+void displayMenu();
+void addStudent(std::vector<Student>& students);
+void displayAllStudents(const std::vector<Student>& students);
+void calculateStudentAverage(const std::vector<Student>& students);
+double getAverage(const std::vector<double>& scores);
+
+int main() {
+    std::vector<Student> students;
+    int choice = 0;
+
+    do {
+        displayMenu();
+        std::cout << "Enter your choice (1-4): ";
+
+        if (!(std::cin >> choice)) {
+            std::cout << "Invalid choice. Please enter a number between 1 and 4.\n\n";
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+            continue;
+        }
+
+        std::cout << "\n";
+
+        switch (choice) {
+            case 1:
+                addStudent(students);
+                break;
+            case 2:
+                displayAllStudents(students);
+                break;
+            case 3:
+                calculateStudentAverage(students);
+                break;
+            case 4:
+                std::cout << "Goodbye!\n";
+                break;
+            default:
+                std::cout << "Invalid choice. Please enter a number between 1 and 4.\n";
+                break;
+        }
+
+        std::cout << "\n";
+
+    } while (choice != 4);
+
+    return 0;
+}
+
+/**
+ * Displays the system menu options.
+ */
+void displayMenu() {
+    std::cout << "=================================\n";
+    std::cout << "   STUDENT RECORD SYSTEM MENU    \n";
+    std::cout << "=================================\n";
+    std::cout << "1. Add student\n";
+    std::cout << "2. Display all students\n";
+    std::cout << "3. Calculate average score\n";
+    std::cout << "4. Quit\n";
+}
+
+/**
+ * Helper function to calculate the average of a list of scores.
+ */
+double getAverage(const std::vector<double>& scores) {
+    if (scores.empty()) return 0.0;
+    
+    double sum = 0.0;
+    for (double score : scores) {
+        sum += score;
+    }
+    return sum / scores.size();
+}
+
+/**
+ * Feature 1: Prompts for student details and scores, then saves the record.
+ */
+void addStudent(std::vector<Student>& students) {
+    Student newStudent;
+
+    std::cout << "Student name: ";
+    std::cin.ignore(); // Clear remaining newline character
+    std::getline(std::cin, newStudent.name);
+
+    std::cout << "Student ID: ";
+    while (!(std::cin >> newStudent.id)) {
+        std::cout << "Invalid ID. Enter a numeric Student ID: ";
+        std::cin.clear();
+        std::cin.ignore(10000, '\n');
+    }
+
+    int numScores = 0;
+    std::cout << "How many scores? ";
+    while (!(std::cin >> numScores) || numScores < 0) {
+        std::cout << "Please enter a valid number of scores: ";
+        std::cin.clear();
+        std::cin.ignore(10000, '\n');
+    }
+
+    for (int i = 0; i < numScores; ++i) {
+        double score;
+        std::cout << "Enter score " << (i + 1) << ": ";
+        while (!(std::cin >> score) || score < 0) {
+            std::cout << "Invalid score. Re-enter score " << (i + 1) << ": ";
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+        }
+        newStudent.scores.push_back(score);
+    }
+
+    students.push_back(newStudent);
+    std::cout << "Student \"" << newStudent.name << "\" added successfully.\n";
+}
+
+/**
+ * Feature 2: Displays a formatted table of all students, their scores, and averages.
+ */
+void displayAllStudents(const std::vector<Student>& students) {
+    if (students.empty()) {
+        std::cout << "No student records found.\n";
+        return;
+    }
+
+    std::cout << std::left << std::setw(12) << "ID"
+              << std::setw(20) << "Name"
+              << std::setw(25) << "Scores"
+              << std::setw(10) << "Average" << "\n";
+    std::cout << std::string(67, '-') << "\n";
+
+    for (const auto& student : students) {
+        std::cout << std::left << std::setw(12) << student.id
+                  << std::setw(20) << student.name;
+
+        // Build scores display string
+        std::string scoresStr = "";
+        for (size_t i = 0; i < student.scores.size(); ++i) {
+            scoresStr += std::to_string(static_cast<int>(student.scores[i]));
+            if (i < student.scores.size() - 1) {
+                scoresStr += ", ";
+            }
+        }
+        
+        if (scoresStr.empty()) {
+            scoresStr = "N/A";
+        }
+
+        std::cout << std::setw(25) << scoresStr;
+        std::cout << std::fixed << std::setprecision(2) << getAverage(student.scores) << "\n";
+    }
+}
+
+/**
+ * Feature 3: Finds a student by ID and displays their average score.
+ */
+void calculateStudentAverage(const std::vector<Student>& students) {
+    if (students.empty()) {
+        std::cout << "No student records available.\n";
+        return;
+    }
+
+    int searchId;
+    std::cout << "Enter student ID: ";
+    if (!(std::cin >> searchId)) {
+        std::cout << "Error: Invalid ID format.\n";
+        std::cin.clear();
+        std::cin.ignore(10000, '\n');
+        return;
+    }
+
+    for (const auto& student : students) {
+        if (student.id == searchId) {
+            double avg = getAverage(student.scores);
+            std::cout << student.name << "'s average score: "
+                      << std::fixed << std::setprecision(2) << avg << "\n";
+            return;
+        }
+    }
+
+    std::cout << "Error: Student with ID " << searchId << " not found.\n";
+}
 
