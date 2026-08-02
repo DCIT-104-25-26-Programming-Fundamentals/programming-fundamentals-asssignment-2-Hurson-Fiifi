@@ -79,4 +79,129 @@
 #include <vector>
 #include <string>
 using namespace std;
+#include <iostream>
+#include <vector>
+#include <string>
 
+// Function Prototypes
+void displayMenu();
+void addTask(std::vector<std::string>& tasks);
+void viewTasks(const std::vector<std::string>& tasks);
+void deleteTask(std::vector<std::string>& tasks);
+
+int main() {
+    std::vector<std::string> tasks;
+    int choice = 0;
+
+    do {
+        displayMenu();
+        std::cout << "Enter your choice (1-4): ";
+        
+        // Handle non-integer input gracefully
+        if (!(std::cin >> choice)) {
+            std::cout << "Invalid choice. Please enter a number between 1 and 4.\n\n";
+            std::cin.clear(); // Clear error flags
+            std::cin.ignore(10000, '\n'); // Discard invalid input
+            continue;
+        }
+
+        std::cout << "\n";
+
+        switch (choice) {
+            case 1:
+                addTask(tasks);
+                break;
+            case 2:
+                viewTasks(tasks);
+                break;
+            case 3:
+                deleteTask(tasks);
+                break;
+            case 4:
+                std::cout << "Goodbye!\n";
+                break;
+            default:
+                std::cout << "Invalid choice. Please enter a number between 1 and 4.\n";
+                break;
+        }
+
+        std::cout << "\n";
+
+    } while (choice != 4);
+
+    return 0;
+}
+
+/**
+ * Displays the main user menu header and options.
+ */
+void displayMenu() {
+    std::cout << "=================================\n";
+    std::cout << "        TO-DO LIST MENU          \n";
+    std::cout << "=================================\n";
+    std::cout << "1. Add task\n";
+    std::cout << "2. View tasks\n";
+    std::cout << "3. Delete task\n";
+    std::cout << "4. Quit\n";
+}
+
+/**
+ * Requirement 1: Prompts for a task description, adds it to vector, and confirms.
+ */
+void addTask(std::vector<std::string>& tasks) {
+    std::cout << "Enter task: ";
+    std::cin.ignore(); // Clear remaining newline character from previous input
+    
+    std::string task;
+    std::getline(std::cin, task);
+
+    if (!task.empty()) {
+        tasks.push_back(task);
+        std::cout << "Task added: \"" << task << "\"\n";
+    } else {
+        std::cout << "Task description cannot be empty.\n";
+    }
+}
+
+/**
+ * Requirement 2: Displays all tasks numbered from 1.
+ */
+void viewTasks(const std::vector<std::string>& tasks) {
+    if (tasks.empty()) {
+        std::cout << "Your to-do list is currently empty!\n";
+        return;
+    }
+
+    std::cout << "Your Tasks:\n";
+    for (size_t i = 0; i < tasks.size(); ++i) {
+        std::cout << (i + 1) << ". " << tasks[i] << "\n";
+    }
+}
+
+/**
+ * Requirement 3: Deletes a task by 1-based index and handles invalid numbers.
+ */
+void deleteTask(std::vector<std::string>& tasks) {
+    if (tasks.empty()) {
+        std::cout << "No tasks available to delete.\n";
+        return;
+    }
+
+    viewTasks(tasks);
+    std::cout << "\nEnter task number to delete: ";
+    
+    int taskNumber;
+    if (!(std::cin >> taskNumber) || taskNumber < 1 || taskNumber > static_cast<int>(tasks.size())) {
+        std::cout << "Error: Invalid task number.\n";
+        std::cin.clear();
+        std::cin.ignore(10000, '\n');
+        return;
+    }
+
+    // Convert 1-based user choice to 0-based vector index
+    int indexToDelete = taskNumber - 1;
+    std::string removedTask = tasks[indexToDelete];
+    
+    tasks.erase(tasks.begin() + indexToDelete);
+    std::cout << "Task \"" << removedTask << "\" has been removed.\n";
+}
