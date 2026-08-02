@@ -41,4 +41,79 @@
 
 #include <iostream>
 using namespace std;
+#include <iostream>
+#include <vector>
+
+// Function prototypes
+double calculateSum(const std::vector<double>& numbers);
+double calculateAverage(const std::vector<double>& numbers);
+double findMaximum(const std::vector<double>& numbers);
+double findMinimum(const std::vector<double>& numbers);
+
+int main() {
+    int count;
+
+    // Prompt for the total count of numbers
+    std::cout << "How many numbers? ";
+    std::cin >> count;
+
+    // Requirement: N must be a positive integer
+    if (count <= 0) {
+        std::cout << "Error: Number of elements must be greater than 0." << std::endl;
+        return 1;
+    }
+
+    std::vector<double> numbers(count);
+
+    // Read user inputs
+    for (int i = 0; i < count; ++i) {
+        std::cout << "Enter number " << (i + 1) << ": ";
+        std::cin >> numbers[i];
+    }
+
+    std::cout << std::endl;
+    std::cout << "Results:" << std::endl;
+    std::cout << "Sum:     " << calculateSum(numbers) << std::endl;
+    std::cout << "Average: " << calculateAverage(numbers) << std::endl;
+    std::cout << "Maximum: " << findMaximum(numbers) << std::endl;
+    std::cout << "Minimum: " << findMinimum(numbers) << std::endl;
+
+    return 0;
+}
+
+// Function to calculate the sum using a custom loop
+double calculateSum(const std::vector<double>& numbers) {
+    double sum = 0.0;
+    for (size_t i = 0; i < numbers.size(); ++i) {
+        sum += numbers[i];
+    }
+    return sum;
+}
+
+// Function to calculate average using custom sum logic
+double calculateAverage(const std::vector<double>& numbers) {
+    return calculateSum(numbers) / numbers.size();
+}
+
+// Function to find the maximum value using a custom loop
+double findMaximum(const std::vector<double>& numbers) {
+    double maxVal = numbers[0];
+    for (size_t i = 1; i < numbers.size(); ++i) {
+        if (numbers[i] > maxVal) {
+            maxVal = numbers[i];
+        }
+    }
+    return maxVal;
+}
+
+// Function to find the minimum value using a custom loop
+double findMinimum(const std::vector<double>& numbers) {
+    double minVal = numbers[0];
+    for (size_t i = 1; i < numbers.size(); ++i) {
+        if (numbers[i] < minVal) {
+            minVal = numbers[i];
+        }
+    }
+    return minVal;
+}
 
